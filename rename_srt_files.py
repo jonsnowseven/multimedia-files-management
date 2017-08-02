@@ -11,12 +11,15 @@ def rename_srt_files(path, lang):
     logger.info("Searching files to rename in {}".format(path))
     for filename in os.listdir(path):
         lang_suffix = re.escape(r"-" + lang)
+        # logger.debug(filename)
+        # logger.debug(re.search(lang_suffix + r".srt$", filename))
         # print(filename)
         if re.search(lang_suffix + r".srt$", filename):
-            print(re.sub(lang_suffix, "", filename))
             old_filename = filename
             new_filename = re.sub(lang_suffix, "", filename)
-            os.rename(old_filename, new_filename)
+            # logger.debug(old_filename)
+            # logger.debug(new_filename)
+            os.rename(os.path.join(path, old_filename), os.path.join(path, new_filename))
             logger.info("File {} was renamed to {}".format(old_filename, new_filename))
 
 if __name__ == "__main__":
