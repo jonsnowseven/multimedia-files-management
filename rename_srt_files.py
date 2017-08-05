@@ -6,28 +6,37 @@ import logging
 
 def rename_srt_files(path, lang):
     """Rename srt files in some path for some lang."""
-    # TODO: Make this function recursive to navigate through directories until the desired one
     logger = logging.getLogger(__name__)
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger.info("Searching files to rename in {}".format(path))
     for filename in os.listdir(path):
         lang_suffix = re.escape(r"-" + lang)
-        # logger.debug(filename)
-        # logger.debug(re.search(lang_suffix + r".srt$", filename))
-        # print(filename)
-        if re.search(lang_suffix + r".srt$", filename):
-            old_filename = filename
-            new_filename = re.sub(lang_suffix, "", filename)
-            # logger.debug(old_filename)
-            # logger.debug(new_filename)
-            old_filename_path = os.path.join(path, old_filename)
-            new_filename_path = os.path.join(path, new_filename)
-            try:
-                os.rename(old_filename_path, new_filename_path)
-                logger.info("File {} was renamed to {}".format(old_filename, new_filename))
-            except FileExistsError:
-                # TODO: Deal with this cases
-                logger.info("Filename {} already exists!".format(new_filename_path))
+        current_path = os.path.join(path, filename)
+        logger.debug(current_path)
+        if not os.path.isfile(current_path):
+            rename_srt_files(current_path, lang)
+        else:
+            # logger.debug(re.search(lang_suffix + r".srt$", filename))
+            # print(filename)
+            if re.search(lang_suffix + r".srt$", filename):
+                old_filename = filename
+                new_filename = re.sub(lang_suffix, "", filename)
+                # logger.debug(old_filename)
+                # logger.debug(new_filename)
+                old_filename_path = os.path.join(path, old_filename)
+                new_filename_path = os.path.join(path, new_filename)
+                try:
+                    os.rename(old_filename_path, new_filename_path)
+                    logger.info("File {} was renamed to {}".format(old_filename, new_filename))
+                except FileExistsError:
+                    logger.info("Filename {} already exists!".format(new_filename_path))
+                    new_filename_without_conflict = new_filename_path.replace(".srt", "") + "-old.srt"
+                    logger.debug("New filename without conflict: {} {}".format(new_filename_path, new_filename_without_conflict))
+                    os.rename(new_filename_path, new_filename_without_conflict)
+                    logger.debug("Current files: {}".format(os.listdir(path)))
+                    logger.info("File {} was renamed to {}".format(new_filename_path, new_filename_without_conflict))
+                    os.rename(old_filename_path, new_filename_path)
+                    logger.info("File {} was renamed to {}".format(old_filename, new_filename))
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(description='Rename srt files in some path for some language.')
