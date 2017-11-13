@@ -7,12 +7,13 @@ import logging
 def rename_srt_files(path, lang):
     """Rename srt files in some path for some lang."""
     logger = logging.getLogger(__name__)
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger.info("Searching files to rename in {}".format(path))
     for filename in os.listdir(path):
-        lang_suffix = re.escape(r"-" + lang)
+        lang_suffix = r"[-\.]" + re.escape(lang)
         current_path = os.path.join(path, filename)
-        logger.debug(current_path)
+        # logger.debug(current_path)
+        # logger.debug(lang_suffix)
         if not os.path.isfile(current_path):
             rename_srt_files(current_path, lang)
         else:
@@ -21,8 +22,8 @@ def rename_srt_files(path, lang):
             if re.search(lang_suffix + r".srt$", filename):
                 old_filename = filename
                 new_filename = re.sub(lang_suffix, "", filename)
-                # logger.debug(old_filename)
-                # logger.debug(new_filename)
+                # logger.debug("OLD FILENAME: " + old_filename)
+                # logger.debug("NEW FILENAME: " + new_filename)
                 old_filename_path = os.path.join(path, old_filename)
                 new_filename_path = os.path.join(path, new_filename)
                 try:
