@@ -18,8 +18,8 @@ def get_sparing_languages(lang):
 def rename_srt_files(path, lang):
     """Rename srt files in some path for some lang."""
     logger = logging.getLogger(__name__)
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    logger.info("Searching files to rename in {}".format(path))
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logger.info("Searching files to rename in '{}'".format(os.path.abspath(path)))
     for filename in os.listdir(path):
         lang_suffix = r"[-\.]" + re.escape(lang)
         current_path = os.path.join(path, filename)
