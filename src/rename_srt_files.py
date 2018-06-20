@@ -29,8 +29,7 @@ def rename_srt_files(path, lang):
             rename_srt_files(current_path, lang)
         else:
             # logger.debug(re.search(lang_suffix + r".srt$", filename))
-            # print(filename)
-            if re.search(lang_suffix + r".srt$", filename):
+            if re.search("|".join([lang_suffix]) + r".srt$", filename):
                 old_filename = filename
                 new_filename = re.sub(lang_suffix, "", filename)
                 logger.debug("OLD FILENAME: " + old_filename)
